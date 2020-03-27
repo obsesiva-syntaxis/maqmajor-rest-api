@@ -6,26 +6,21 @@ import cloudinary from 'cloudinary';
 import '../lib/env';
 
 cloudinary.v2.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
+    cloud_name: 'aff62215248',
+    api_key: '365764322244268',
+    api_secret: 'CoqzvHWTgyCbIGCzKGdRbGN1K1c'
 });
 
 export async function getMaquinas(req:Request, res:Response):Promise<Response>{
     const maq = await Maquina.find();
-    console.log(process.env.MONGODB_URI);
     return res.json(maq);
 }
 
 export async function createMaquina(req:Request, res:Response): Promise<Response>{
     const {
-        nombre, 
-        modelo, 
-        descripcion, 
-        marca,
-        tipo
+        nombre, modelo, descripcion, marca, tipo, potMax, potCont, combustible, partida, fases
     } = req.body;
-    const {potMax,potCont,combustible,partida,fases} = req.body;
+    
     const caracteristica = {
         potMax,
         potCont,
@@ -36,7 +31,8 @@ export async function createMaquina(req:Request, res:Response): Promise<Response
 
     const result = await cloudinary.v2.uploader.upload(req.file.path, {
         folder:'MAJORMACHINERY'
-    });
+    }).catch(err => console.log(err));
+    console.log(result);
     const newMaquina = {
         nombre: nombre,
         modelo: modelo,
@@ -45,8 +41,8 @@ export async function createMaquina(req:Request, res:Response): Promise<Response
         tipo: tipo,
         caracteristica: caracteristica,
         imgUrl: result.url
-    };
-
+    }
+    console.log(newMaquina);
     const maquina = new Maquina(newMaquina);
     await maquina.save();
     return res.json({
@@ -80,19 +76,10 @@ export async function updateMaquina(req:Request, res:Response): Promise<Response
     const {nombre, modelo, descripcion, marca, tipo} = req.body;
     const {potMax, potCont, combustible, partida, fases} = req.body;
     const caracteristica = {
-        potMax,
-        potCont,
-        combustible,
-        partida,
-        fases
+        potMax, potCont, combustible, partida, fases
     }
     const maq = await Maquina.findByIdAndUpdate(id, {
-        nombre,
-        modelo,
-        descripcion,
-        marca,
-        tipo,
-        caracteristica
+        nombre, modelo, descripcion, marca, tipo, caracteristica
     })
 
     return res.json({

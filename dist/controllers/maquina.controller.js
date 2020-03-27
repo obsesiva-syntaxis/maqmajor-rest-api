@@ -7,6 +7,7 @@ const Maquina_1 = __importDefault(require("../models/Maquina"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const cloudinary_1 = __importDefault(require("cloudinary"));
+require("../lib/env");
 cloudinary_1.default.v2.config({
     cloud_name: 'aff62215248',
     api_key: '365764322244268',
@@ -18,8 +19,7 @@ async function getMaquinas(req, res) {
 }
 exports.getMaquinas = getMaquinas;
 async function createMaquina(req, res) {
-    const { nombre, modelo, descripcion, marca, tipo } = req.body;
-    const { potMax, potCont, combustible, partida, fases } = req.body;
+    const { nombre, modelo, descripcion, marca, tipo, potMax, potCont, combustible, partida, fases } = req.body;
     const caracteristica = {
         potMax,
         potCont,
@@ -29,7 +29,8 @@ async function createMaquina(req, res) {
     };
     const result = await cloudinary_1.default.v2.uploader.upload(req.file.path, {
         folder: 'MAJORMACHINERY'
-    });
+    }).catch(err => console.log(err));
+    console.log(result);
     const newMaquina = {
         nombre: nombre,
         modelo: modelo,
@@ -39,6 +40,7 @@ async function createMaquina(req, res) {
         caracteristica: caracteristica,
         imgUrl: result.url
     };
+    console.log(newMaquina);
     const maquina = new Maquina_1.default(newMaquina);
     await maquina.save();
     return res.json({
@@ -67,12 +69,13 @@ async function deleteMaquina(req, res) {
 exports.deleteMaquina = deleteMaquina;
 async function updateMaquina(req, res) {
     const { id } = req.params;
-    const { nombre, modelo, descripcion, marca } = req.body;
+    const { nombre, modelo, descripcion, marca, tipo } = req.body;
+    const { potMax, potCont, combustible, partida, fases } = req.body;
+    const caracteristica = {
+        potMax, potCont, combustible, partida, fases
+    };
     const maq = await Maquina_1.default.findByIdAndUpdate(id, {
-        nombre,
-        modelo,
-        descripcion,
-        marca
+        nombre, modelo, descripcion, marca, tipo, caracteristica
     });
     return res.json({
         mesagge: 'maquina modificada',
