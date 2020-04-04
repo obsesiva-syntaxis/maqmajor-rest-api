@@ -59,8 +59,10 @@ export async function updateSolar(req: Request, res: Response): Promise<Response
 }
 
 export async function deleteSolar(req: Request, res: Response): Promise<Response> {
-    const { id } = req.params
-    const solarDeleted = await Solar.findOneAndRemove(id);
+    const result = await Solar.findById(req.params.id);
+    if(result){cloudinary.v2.uploader.destroy(result.imgUrl)}
+    const solarDeleted = await Solar.findByIdAndRemove(req.params.id);
+    
     return res.json({
         msg: 'Eliminado',
         solarDeleted

@@ -51,7 +51,7 @@ export async function updateSolicitud(req:Request, res:Response):Promise<Respons
 
 export async function deleteSolicitud(req:Request, res:Response):Promise<Response>{
     const { id } = req.params;
-    const solicitud = await Solicitud.findOneAndRemove(id);
+    const solicitud = await Solicitud.findByIdAndRemove(id);
     return res.json({
         msg: 'eliminado....',
         solicitud

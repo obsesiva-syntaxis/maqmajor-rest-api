@@ -67,7 +67,8 @@ export async function updateHidra(req:Request, res:Response):Promise<Response>{
 }
 
 export async function deleteHidra(req:Request, res:Response):Promise<Response>{
-    const result = await Hidraulica.findOneAndRemove(req.params.id);
+    const result = await Hidraulica.findByIdAndDelete(req.params.id);
+    if(result){cloudinary.v2.uploader.destroy(result.imgUrl)}
     return res.json({
         msg: 'eliminado',
         result
