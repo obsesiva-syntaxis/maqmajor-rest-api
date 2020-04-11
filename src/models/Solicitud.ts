@@ -5,8 +5,9 @@ const solicitudSchema = new Schema({
     email: String,
     telefono: String,
     ciudad: String,
-    empresa: String,
-    descripcion: String
+    idMaquina: String,
+    tipoMaquina: String,
+    fechaCotizacion: Date
 });
 
 interface ISolicitud extends Document{
@@ -14,8 +15,9 @@ interface ISolicitud extends Document{
     email: string,
     telefono: string,
     ciudad: string,
-    empresa: string,
-    descripcion: string
+    idMaquina: string,
+    tipoMaquina: string,
+    fechaCotizacion: Date
 }
 
 export default model<ISolicitud>('solicitude', solicitudSchema);
